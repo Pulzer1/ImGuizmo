@@ -24,10 +24,10 @@
 // SOFTWARE.
 //
 
-#include "imgui.h"
 #ifndef IMGUI_DEFINE_MATH_OPERATORS
 #define IMGUI_DEFINE_MATH_OPERATORS
 #endif
+#include "imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
 
@@ -982,7 +982,7 @@ namespace IMGUIZMO_NAMESPACE
 
    bool IsUsing()
    {
-      return gContext.mbUsing || gContext.mbUsingBounds;
+      return (gContext.mbUsing && (gContext.mActualID == -1 || gContext.mActualID == gContext.mEditingID)) || gContext.mbUsingBounds;
    }
 
    bool IsOver()
@@ -1315,6 +1315,11 @@ namespace IMGUIZMO_NAMESPACE
 
    static void DrawHatchedAxis(const vec_t& axis)
    {
+      if (gContext.mStyle.HatchedAxisLineThickness <= 0.0f)
+      {
+         return;
+      }
+
       for (int j = 1; j < 10; j++)
       {
          ImVec2 baseSSpace2 = worldToPos(axis * 0.05f * (float)(j * 2) * gContext.mScreenFactor, gContext.mMVP);
@@ -1698,9 +1703,9 @@ namespace IMGUIZMO_NAMESPACE
             float boundDistance = sqrtf(ImLengthSqr(worldBound1 - worldBound2));
             int stepCount = (int)(boundDistance / 10.f);
             stepCount = min(stepCount, 1000);
-            float stepLength = 1.f / (float)stepCount;
             for (int j = 0; j < stepCount; j++)
             {
+               float stepLength = 1.f / (float)stepCount;
                float t1 = (float)j * stepLength;
                float t2 = (float)j * stepLength + stepLength * 0.5f;
                ImVec2 worldBoundSS1 = ImLerp(worldBound1, worldBound2, ImVec2(t1, t1));
@@ -1841,7 +1846,7 @@ namespace IMGUIZMO_NAMESPACE
             // info text
             char tmps[512];
             ImVec2 destinationPosOnScreen = worldToPos(gContext.mModel.v.position, gContext.mViewProjection);
-            ImFormatString(tmps, sizeof(tmps), "X: %.2f Y: %.2f Z:%.2f"
+            ImFormatString(tmps, sizeof(tmps), "X: %.2f Y: %.2f Z: %.2f"
                , (bounds[3] - bounds[0]) * gContext.mBoundsMatrix.component[0].Length() * scale.component[0].Length()
                , (bounds[4] - bounds[1]) * gContext.mBoundsMatrix.component[1].Length() * scale.component[1].Length()
                , (bounds[5] - bounds[2]) * gContext.mBoundsMatrix.component[2].Length() * scale.component[2].Length()
@@ -2867,7 +2872,7 @@ namespace IMGUIZMO_NAMESPACE
                   {
                      gContext.mDrawList->AddConvexPolyFilled(faceCoordsScreen, 4, IM_COL32(0xF0, 0xA0, 0x60, 0x80));
 
-                     if (io.MouseDown[0] && !isClicking && !isDraging) {
+                     if (io.MouseDown[0] && !isClicking && !isDraging && GImGui->ActiveId == 0) {
                         overBox = boxCoordInt;
                         isClicking = true;
                         isDraging = true;
