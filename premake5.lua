@@ -1,8 +1,8 @@
 project "ImGuizmo"
     kind "StaticLib"
     language "C++"
-    cppdialect "C++17"
-    staticruntime "ON"
+    cppdialect "C++20"
+    staticruntime "Off"
     
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -26,5 +26,8 @@ project "ImGuizmo"
 		symbols "on"
 
 	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
+   filter "configurations:Distribution"
 		runtime "Release"
 		optimize "on"

@@ -1,2 +1,13 @@
 build/
 .*/
+bin-int/Debug/ImGuizmo/ImGuizmo.Build.CppClean.log
+*.recipe
+bin-int/Debug/ImGuizmo/ImGuizmo.log
+*.obj
+*.tlog
+bin-int/Debug/ImGuizmo/ImGuizmo.vcxproj.FileListAbsolute.txt
+bin-int/Release/ImGuizmo/ImGuizmo.log
+*.idb
+*.lib
+*.pdb
+*.vcxproj
